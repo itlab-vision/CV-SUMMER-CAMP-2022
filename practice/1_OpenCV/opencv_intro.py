@@ -1,6 +1,6 @@
 import argparse
 import cv2
-
+import sys
 
 def make_cat_passport_image(input_image_path, haar_model_path):
 
