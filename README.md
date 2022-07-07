@@ -16,4 +16,4 @@
 ## Дополнительные материалы
 
 Курс "Современные методы и технологии глубокого обучения в компьютерном зрении"
-[https://hpc-education.unn.ru/files/courses/intel-dl-cv-course-2](https://hpc-education.unn.ru/files/courses/intel-dl-cv-course-2)
+[Ссылка](http://hpc-education.unn.ru/ru/%D0%BE%D0%B1%D1%83%D1%87%D0%B5%D0%BD%D0%B8%D0%B5/%D0%BA%D1%83%D1%80%D1%81%D1%8B/%D0%BC%D0%B0%D0%B3%D0%B8%D1%81%D1%82%D1%80%D0%B0%D1%82%D1%83%D1%80%D0%B0/deep_learning_in_computer_vision_2)
