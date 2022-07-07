@@ -4,7 +4,7 @@ Object detector based on Inference Engine
 import os
 import sys
 
-sys.path.append(r'D:\_dev\open_model_zoo\demos\common\python')
+sys.path.append(r'C:\open_model_zoo\demos\common\python')
 
 import cv2
 import numpy as np
@@ -40,7 +40,12 @@ def build_argparser():
   
   
 def draw_detections(frame, detections, labels, threshold):
-
+    for i in detections:
+        if i.score > 0.5:
+            point1 = i.bottom_left_point()
+            point2 = i.top_right_point()
+            cv2.rectangle(frame, point1, point2, (0,0,255), 1)
+            cv2.putText(frame, 'text', point1, cv2.FONT_HERSHEY_COMPLEX, 0.45, (0,0,255), 1)
     return frame
 
 def main():
@@ -51,32 +56,45 @@ def main():
     log.info("Start IE detection sample")
 
     # Initialize data input
-
-    
+    cap = open_images_capture(args.input, True)
     
     # Initialize OpenVINO
+    ie = Core()
 
-    
     # Initialize Plugin configs
-
-    
+    num_streams = '1'
+    num_threads = '4'
+    plugin_config = get_user_config(args.device, num_streams, num_threads)
+    model_adapter = OpenvinoAdapter(create_core(), args.model,
+                                    device=args.device, plugin_config=plugin_config,
+                                    max_num_requests=1, model_parameters={'input_layouts': None})
     #Load SSD model
+    model = DetectionModel.create_model('ssd', model_adapter)
 
-    
     # Initialize pipeline
+    detector_pipeline = AsyncPipeline(model)
 
     while True:
 
         # Get one image
+        img = cap.read()
 
         # Start processing frame asynchronously
-    
+        frame_id = 0
+        detector_pipeline.submit_data(img, frame_id, {'frame': img, 'start_time': 0})
+        detector_pipeline.await_any()
+        results, meta = detector_pipeline.get_result(frame_id)
     
         # Draw detections in the image
-    
+        img = draw_detections(img, results, None, args.prob_threshold)
+
         # Show image and wait for key press
-        
+        cv2.imshow('Image with detections', img)
+
         # Wait 1 ms and check pressed button to break the loop
+        if cv2.waitKey(1) & 0xFF == ord('q'):
+            break
+
         pass
 
         
