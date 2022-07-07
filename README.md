@@ -12,3 +12,8 @@
 ## Расписание школы
 
 ![](docs/schedule.png)
+
+## Дополнительные материалы
+
+Курс "Современные методы и технологии глубокого обучения в компьютерном зрении"
+[https://hpc-education.unn.ru/files/courses/intel-dl-cv-course-2](https://hpc-education.unn.ru/files/courses/intel-dl-cv-course-2)
