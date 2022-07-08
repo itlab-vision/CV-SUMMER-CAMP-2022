@@ -3,8 +3,9 @@ import math
 import logging as log
 import sys
 from tqdm import tqdm
+from common.common_objects import *
 from common.feature_distance import calc_features_similarity
-from common.common_objects import DetectedObject, validate_detected_object, Bbox
+from common.common_objects import DetectedObject, validate_detected_object, Bbox, get_bbox_size, calc_IoU
 from common.common_objects import get_bbox_center, get_dist, calc_bbox_area
 from common.find_best_assignment import solve_assignment_problem
 from common.annotation import AnnotationObject, AnnotationStorage
@@ -76,6 +77,7 @@ class Track:
 
         return res_bbox
 
+
 class Tracker:
     def __init__(self, num_frames_to_remove_track, num_objects_to_make_track_valid, affinity_threshold):
         self.tracks = []
@@ -133,13 +135,30 @@ class Tracker:
         return affinity_appearance * affinity_position * affinity_shape
 
     def _calc_affinity_appearance(self, track, obj):
-        raise NotImplementedError("The function _calc_affinity_appearance  is not implemented -- implement it by yourself")
+        tmp1 = track.last().appearance_feature
+        tmp2 = obj.appearance_feature
+        result = calc_features_similarity(tmp1, tmp2)
+        return result
 
     def _calc_affinity_position(self, track, obj):
-        raise NotImplementedError("The function _calc_affinity_position is not implemented -- implement it by yourself")
+        tmp1 = track.last().bbox
+        tmp2 = obj.bbox
+        c1 = get_bbox_center(tmp1)
+        c2 = get_bbox_center(tmp2)
+        D = get_dist(c1, c2)
+        (w1, h1) = get_bbox_size(tmp1)
+        C = 0.11
+        result = math.exp(-C*((D**2)/(calc_bbox_area(tmp1))))
+        return result
 
     def _calc_affinity_shape(self, track, obj):
-        raise NotImplementedError("The function _calc_affinity_shape is not implemented -- implement it by yourself")
+        tmp1 = track.last().bbox
+        tmp2 = obj.bbox
+        (w1, h1) = get_bbox_size(tmp1)
+        (w2, h2) = get_bbox_size(tmp2)
+        C = 0.12
+        result = math.exp(-C * ((w1-w2) / w1) + ((h1 - h2) / h1))
+        return result
 
     @staticmethod
     def _log_affinity_matrix(affinity_matrix):
