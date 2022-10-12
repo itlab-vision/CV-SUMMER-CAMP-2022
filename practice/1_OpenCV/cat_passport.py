@@ -1,26 +1,38 @@
 import argparse
 import cv2
+import sys
 
 
 def make_cat_passport_image(input_image_path, haar_model_path):
 
     # Read image
-
+    img = cv2.imread(input_image_path)
     # Convert image to grayscale
-
+    gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     # Normalize image intensity
-
+    gray = cv2.normalize(img, gray)
     # Resize image
 
     # Detect cat faces using Haar Cascade
+    detector = cv2.CascadeClassifier(haar_model_path)
+    rects = detector.detectMultiScale(img, scaleFactor=1.1, minNeighbors=5,
+                                      minSize=(75, 75))
 
     # Draw bounding box
+    for (i, (x, y, w, h)) in enumerate(rects):
+        cv2.rectangle(img, (x, y), (x + w, y + h), (0, 0, 255), 2)
+        cv2.putText(img, f"Cat #{i + 1}", (x, y - 10),
+                    cv2.FONT_HERSHEY_SIMPLEX, 0.55, (0, 0, 255), 2)
 
     # Display result image
-
+    cv2.imshow("window_name", img)
+    cv2.waitKey(0)
+    cv2.destroyAllWindows()
     # Crop image
-
+    x, y, w, h = rects[0]
+    image = img[y:y + h, x:x + w]
     # Save result image to file
+    cv2.imwrite('out.jpg', img)
 
     return
 
