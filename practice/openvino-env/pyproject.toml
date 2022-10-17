@@ -1,0 +1,18 @@
+[tool.poetry]
+name = "openvino-env"
+version = "0.1.0"
+description = ""
+authors = ["VankaVstanka03 <vvstanka39@gmail.com>"]
+readme = "README.md"
+packages = [{include = "openvino_env"}]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+opencv-python = "^4.6.0.66"
+openvino-dev = "^2022.2.0"
+onnx = "^1.12.0"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
